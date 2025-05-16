@@ -27,10 +27,31 @@ module.exports = {
     }, 
     async cadastrarMensagens(request, response) {
         try {
+
+            const {id_remetente, id_destinatario, data_hora, texto} = request.body;
+            const status = 1;
+
+            const sql = `
+           INSERT INTO Mensagens
+            (id_remetente, id_destinatario, data_hora, texto, status)
+             VALUES
+            (?, ?, ?, ?, ?)
+            `;
+
+            const values = [id_remetente, id_destinatario, data_hora, texto, status];
+
+            const [result] =  await db.query(sql, values);
+
+            const dados = {
+                id_mens: result.insertId,
+                id_remetente,
+                id_destinatario
+            };
+
             return response.status(200).json({
                 sucesso: true, 
                 mensagem: 'Cadastro de mensagens', 
-                dados: null
+                dados: dados
             });
         } catch (error) {
             return response.status(500).json({
