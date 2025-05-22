@@ -63,6 +63,21 @@ module.exports = {
     }, 
     async editarMensagens(request, response) {
         try {
+            const {id_remetente, id_destinatario, data_hora, texto} = request.body;
+        const status = 1;
+
+        const sql = `
+       UPDATE Mensagens SET
+            id_remetente = ?, id_destinatario = ?, data_hora = ?, texto = ?, status= ?
+       WHERE
+            id_mens = ?;
+    
+        `;
+
+        const values = [id_remetente, id_destinatario, data_hora, texto, status];
+
+        const [result] =  await db.query(sql, values);
+
             return response.status(200).json({
                 sucesso: true, 
                 mensagem: 'Alteração em mensagem', 
