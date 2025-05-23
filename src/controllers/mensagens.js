@@ -66,6 +66,8 @@ module.exports = {
             const {id_remetente, id_destinatario, data_hora, texto} = request.body;
         const status = 1;
 
+        const {id_mens} = request.params;
+
         const sql = `
        UPDATE Mensagens SET
             id_remetente = ?, id_destinatario = ?, data_hora = ?, texto = ?, status= ?
@@ -74,14 +76,28 @@ module.exports = {
     
         `;
 
-        const values = [id_remetente, id_destinatario, data_hora, texto, status];
+        const values = [id_remetente, id_destinatario, data_hora, texto, status, id_mens];
 
         const [result] =  await db.query(sql, values);
 
+        if (result.affectedRows ==0){
+            return response.status(404).json({
+                sucesso: false,
+                mensagem: `Mensagem ${id_mens} não encontrado`,
+                dados: null
+            });
+        }
+
+        const dados = {
+            id_mens: result.insertId,
+            id_remetente,
+            id_destinatario
+        };
+
             return response.status(200).json({
                 sucesso: true, 
-                mensagem: 'Alteração em mensagem', 
-                dados: null
+                mensagem: `Mensagem ${id_mens} atualizada com sucesso!`, 
+                dados
             });
         } catch (error) {
             return response.status(500).json({
