@@ -109,9 +109,20 @@ module.exports = {
     }, 
     async apagarMensagens(request, response) {
         try {
+             
+            const {id_mens} = request.params;
+
+        const sql = `
+        DELETE FROM Mensagens WHERE id_mens = ?
+        `;
+
+        const values = [id_mens];
+
+        const [result] =  await db.query(sql, values);
+
             return response.status(200).json({
                 sucesso: true, 
-                mensagem: 'Exclusão de mensagem', 
+                mensagem: `Exclusão de mensagem ${id_mens}`, 
                 dados: null
             });
         } catch (error) {
